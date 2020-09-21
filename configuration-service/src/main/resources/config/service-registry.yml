@@ -1,0 +1,7 @@
+server:
+  port: ${SERVER_PORT:8761}
+eureka:
+  client:
+    fetchRegistry: false
+    registerWithEureka: false
+    serviceUrl.defaultZone: http://serviceregistry:8761/eureka/

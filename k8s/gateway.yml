@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: gatewayservice
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+
+  # For HTTPS we need to use this property, for registering certificate we need a domain name
+  # - port:
+  #        number: 443
+  #        name: https
+  #        protocol: HTTPS
+  #      tls:
+  #        mode: SIMPLE
+  #        credentialName: organic-credential

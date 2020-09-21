@@ -1,0 +1,57 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: kkvs
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - gatewayservice
+  http:
+    - match:
+        - uri:
+            prefix: /admin
+      route:
+        - destination:
+            port:
+              number: 8080
+            host: productservice.kk.svc.cluster.local
+
+    - match:
+        - uri:
+            prefix: /login
+      route:
+        - destination:
+            port:
+              number: 8080
+            host: productservice.kk.svc.cluster.local
+      timeout: 10s
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+    - match:
+        - uri:
+            prefix: /api/v1/products
+      route:
+        - destination:
+            port:
+              number: 8080
+            host: productservice.kk.svc.cluster.local
+
+    - match:
+        - uri:
+            prefix: /api/v1/orders
+      route:
+        - destination:
+            port:
+              number: 9005
+            host: orderservice.kk.svc.cluster.local
+
+    - match:
+        - uri:
+            prefix: /api/v1/customers
+      route:
+        - destination:
+            port:
+              number: 9010
+            host: userservice.kk.svc.cluster.local

@@ -1,0 +1,54 @@
+#Define deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: configservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: configservice
+  template:
+    metadata:
+      labels:
+        app: configservice
+    spec:
+      containers:
+        - name: configservice
+          image: nkrishnakumar/istio-config-server:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8888
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8888
+            initialDelaySeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8888
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: configservice
+spec:
+  type: NodePort
+  ports:
+    - port: 8888
+      targetPort: 8888
+      protocol: TCP
+      nodePort: 31001
+  selector:
+    app: configservice
